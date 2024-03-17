@@ -3,9 +3,8 @@ import numpy as np
 import os
 import tensorflow as tf
 from keras.models import Sequential
-from keras.layers import GlobalAveragePooling2D, Dense, Dropout,Input, Activation, MaxPooling2D, Conv2D, Flatten
+from keras.layers import Dense, Dropout,Input, Activation, MaxPooling2D, Conv2D, Flatten
 from tensorflow.keras.applications.inception_resnet_v2 import InceptionResNetV2
-from keras.applications.mobilenet import MobileNet
 from keras.utils import np_utils
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
@@ -106,11 +105,16 @@ model.add(Activation('softmax'))
 
 # Compile model
 model.compile(loss='categorical_crossentropy',
-              optimizer=tf.keras.optimizers.Adam(lr=0.001),
+              optimizer=tf.keras.optimizers.Adam(learning_rate=0.001),
               metrics=['accuracy'])
+
+with open('model/model_summary.txt', 'w') as file:
+    file.write('Model Summary:\n')
+    file.write(model.summary())
+
 
 # Latih model dengan data augmentation
 model.fit(datagen.flow(X_train, y_train, batch_size=16), epochs=10, validation_data=(X_test, y_test))
 
 # Simpan model
-model.save('face_recognition_model.h5')
+model.save('model/face_recognition_model.h5')
